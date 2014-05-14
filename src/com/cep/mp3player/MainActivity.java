@@ -3,6 +3,7 @@ package com.cep.mp3player;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -47,6 +48,10 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onPlayClicked(View view) {
+        view.setBackgroundColor(Color.RED);
     }
 
     /**
