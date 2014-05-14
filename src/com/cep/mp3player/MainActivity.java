@@ -30,6 +30,7 @@ import android.os.Build;
 public class MainActivity extends Activity {
     private MediaPlayer player = new MediaPlayer();
     private MediaManager media_manager;
+    private PlayList playlist;
     int current_song;
 
     void playSong(String song_path) {
@@ -45,7 +46,7 @@ public class MainActivity extends Activity {
         
     void playSong() {
         showSongMetadata();
-        playSong(media_manager.getSong(current_song).path());
+        playSong(playlist.get(current_song).path());
     }
 
     @Override
@@ -59,6 +60,7 @@ public class MainActivity extends Activity {
         }
 
         media_manager = new MediaManager();
+        playlist = new PlayList();
     }
 
     @Override
@@ -99,12 +101,15 @@ public class MainActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         Bundle b = data.getExtras();
-        current_song = b.getInt("com.cep.mp3player.selected");
-        playSong(media_manager.getSong(current_song).path());
+        Integer selected = b.getInt("com.cep.mp3player.selected");
+        playlist.add(media_manager.getSong(selected));
+
+        current_song = 0;
+        playSong();
     }
 
     void showSongMetadata() {
-        SongData song = media_manager.getSong(current_song);
+        SongData song = playlist.get(current_song);
 
         TextView song_title_wg = (TextView) findViewById(R.id.songTitle);
         song_title_wg.setText(song.album() + " - " + song.title());
@@ -127,13 +132,13 @@ public class MainActivity extends Activity {
     public void onPrevClicked(View view) {
         current_song -= 1;
         if (current_song < 0)
-            current_song = media_manager.size() -1;
+            current_song = playlist.size() -1;
 
         playSong();
     }
 
     public void onNextClicked(View view) {
-        current_song = (current_song + 1) % media_manager.size();
+        current_song = (current_song + 1) % playlist.size();
         playSong();
     }
 
@@ -226,3 +231,14 @@ class SongData {
         return retval;
     }
 } 
+
+class PlayList extends ArrayList<SongData> {
+
+    PlayList() {
+    }
+        
+    PlayList(MediaManager media_manager, ArrayList<Integer> indexes) {
+        for (int i: indexes) 
+            add(media_manager.getSong(i));
+    }
+}
