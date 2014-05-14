@@ -1,5 +1,7 @@
 package com.cep.mp3player;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
@@ -23,7 +25,10 @@ public class SongListActivity extends ListActivity {
     @Override
     public void onListItemClick(ListView parent, View v, int position, long id) {
         Intent resultIntent = new Intent();
-        resultIntent.putExtra("com.cep.mp3player.selected", position);
+
+        ArrayList<Integer> selected = new ArrayList<Integer>();
+        selected.add(position);
+        resultIntent.putIntegerArrayListExtra("com.cep.mp3player.selected", selected);
         
         setResult(Activity.RESULT_OK, resultIntent);
         finish();

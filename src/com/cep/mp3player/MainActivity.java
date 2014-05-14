@@ -101,8 +101,9 @@ public class MainActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         Bundle b = data.getExtras();
-        Integer selected = b.getInt("com.cep.mp3player.selected");
-        playlist.add(media_manager.getSong(selected));
+        ArrayList<Integer> selected = b.getIntegerArrayList("com.cep.mp3player.selected");
+        for (int i: selected)
+            playlist.add(media_manager.getSong(i));
 
         current_song = 0;
         playSong();
@@ -208,7 +209,7 @@ class SongData {
         String retval = metadata.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
         if (retval == null) 
             retval = pathToTitle(file.getName());
-
+                
         return retval;
     }
 
