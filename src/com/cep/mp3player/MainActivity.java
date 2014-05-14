@@ -88,13 +88,13 @@ public class MainActivity extends Activity {
 
         Bundle b = data.getExtras();
         int current_song = b.getInt("com.cep.mp3player.selected");
-        playSong(media_manager.getPath(current_song));
+        playSong(media_manager.getSong(current_song).path());
         showSongTitle(current_song);
     }
 
     void showSongTitle(int index) {
         TextView song_title_wg = (TextView) findViewById(R.id.songTitle);
-        song_title_wg.setText(media_manager.getTitle(index));
+        song_title_wg.setText(media_manager.getSong(index).title());
     }
 
     /**
@@ -126,17 +126,35 @@ class MediaManager {
     public String[] songTitles() {
         List<String> titles = new ArrayList<String>();
 
-        for (File f: song_files) {
-            titles.add(f.getName());
-        }
+        for (int i = 0; i < song_files.length; i++)
+            titles.add(getSong(i).title());
+                
         return titles.toArray(new String[0]);
     }
-
-    public String getPath(int index) {
-        return song_files[index].getPath();
-    }
-
-    public String getTitle(int index) {
-        return song_files[index].getName();
+        
+    public SongData getSong(int index) {
+        return new SongData(song_files[index]);
     }
 }
+
+class SongData {
+    File file;
+
+    public SongData(File f) {
+        file = f;
+    }
+
+    public String path() {
+        return file.getPath();
+    }
+
+    public String title() {
+        return pathToTitle(file.getName());
+    }
+
+    private String pathToTitle(String filename) {
+        String retval = filename.substring(0, (filename.length() - 4));
+        retval = retval.replace("-", " ");
+        return retval;
+    }
+} 
