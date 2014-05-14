@@ -18,7 +18,7 @@ public class SongListActivity extends ListActivity {
                 
         String[] song_names = getIntent().getExtras().getStringArray("com.cep.mp3player.available");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                                                                android.R.layout.simple_list_item_1, song_names);
+                                                                R.layout.row_list, R.id.song, song_names);
         setListAdapter(adapter);
     }
         
