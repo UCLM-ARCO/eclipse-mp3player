@@ -3,6 +3,7 @@ package com.cep.mp3player;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -64,8 +65,14 @@ public class MainActivity extends Activity {
     }
 
     public void onPlayClicked(View view) {
-        String music_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() + '/';
-        playSong(music_path + "Clair de Lune.mp3");
+        Intent intent = new Intent(this, SongListActivity.class);
+        String[] songs = new String[] {
+            "Clair du Lune",
+            "Deux Arabesques"
+        };
+
+        intent.putExtra("com.cep.mp3player.available", songs);
+        startActivity(intent);
     }
 
     /**
