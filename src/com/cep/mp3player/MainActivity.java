@@ -1,6 +1,7 @@
 package com.cep.mp3player;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,7 +121,11 @@ class MediaManager {
 
     public MediaManager() {
         File music_dir = new File(music_path);
-        song_files = music_dir.listFiles();
+        FileFilter directory_filter = new FileFilter() {
+                public boolean accept(File file) {
+                    return ! file.isDirectory();
+                }};
+        song_files = music_dir.listFiles(directory_filter);
     }
 
     public String[] songTitles() {
@@ -131,7 +136,7 @@ class MediaManager {
                 
         return titles.toArray(new String[0]);
     }
-        
+
     public SongData getSong(int index) {
         return new SongData(song_files[index]);
     }
