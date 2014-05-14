@@ -8,7 +8,12 @@ import java.util.List;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -60,7 +65,12 @@ public class MainActivity extends Activity {
         }
 
         media_manager = new MediaManager();
-        playlist = new PlayList();
+        playlist = new PlayList(this);
+    }
+
+    protected void onPause() {
+        super.onPause();
+        playlist.save();
     }
 
     @Override
@@ -201,6 +211,10 @@ class SongData {
         metadata.setDataSource(f.getPath());
     }
 
+    public SongData(String path) {
+        this(new File(path));
+    }
+        
     public String path() {
         return file.getPath();
     }
@@ -234,12 +248,62 @@ class SongData {
 } 
 
 class PlayList extends ArrayList<SongData> {
-
-    PlayList() {
-    }
+    private PlayListStore store;
         
+    PlayList(Activity activity) {
+        store = new PlayListStore(activity, this);
+    }
+
     PlayList(MediaManager media_manager, ArrayList<Integer> indexes) {
         for (int i: indexes) 
             add(media_manager.getSong(i));
+    }
+
+    void save() {
+        for (SongData s: this) 
+            store.add(s.path());
+    }
+}
+
+class PlayListStore extends SQLiteOpenHelper {
+    private static final String DATABASE_NAME="playlist.db";
+    private static final int SCHEMA_VERSION=1;
+    private SQLiteDatabase db;
+
+    public PlayListStore(Context context, ArrayList<SongData> model) {                  
+        super(context, DATABASE_NAME, null, SCHEMA_VERSION);
+        db = getWritableDatabase();
+
+        Cursor cursor = getAll();
+        if (cursor.moveToFirst()) {
+            do {
+                String path = cursor.getString(0);
+                model.add(new SongData(path));
+            } while(cursor.moveToNext());
+        }
+    }
+        
+    Cursor getAll() {
+        return getReadableDatabase().rawQuery(
+                                              "SELECT songpath FROM playlist ORDER BY _id", null);
+    }
+        
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE playlist (_id INTEGER PRIMARY KEY AUTOINCREMENT, songpath TEXT);");            
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // Migrate from previous DB schema to current.
+    }
+
+    public void onDestroy() {
+    }
+        
+    public void add(String songPath) {
+        ContentValues cv = new ContentValues();
+        cv.put("songpath", songPath);
+        db.insert("playlist", null, cv);
     }
 }
