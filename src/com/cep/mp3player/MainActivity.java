@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +15,18 @@ import android.view.ViewGroup;
 import android.os.Build;
 
 public class MainActivity extends Activity {
+    private MediaPlayer player = new MediaPlayer();
+
+    void playSong(String song_path) {
+        player.reset();
+        try {
+            player.setDataSource(song_path);
+            player.prepare();
+            player.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,8 +35,7 @@ public class MainActivity extends Activity {
 
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                .add(R.id.container, new PlaceholderFragment())
-                .commit();
+                .add(R.id.container, new PlaceholderFragment()).commit();
         }
     }
 
@@ -51,7 +64,8 @@ public class MainActivity extends Activity {
     }
 
     public void onPlayClicked(View view) {
-        view.setBackgroundColor(Color.RED);
+        String music_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() + '/';
+        playSong(music_path + "Clair de Lune.mp3");
     }
 
     /**
