@@ -1,5 +1,9 @@
 package com.cep.mp3player;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
@@ -17,6 +21,7 @@ import android.os.Build;
 
 public class MainActivity extends Activity {
     private MediaPlayer player = new MediaPlayer();
+    private MediaManager media_manager;
 
     void playSong(String song_path) {
         player.reset();
@@ -38,6 +43,8 @@ public class MainActivity extends Activity {
             getFragmentManager().beginTransaction()
                 .add(R.id.container, new PlaceholderFragment()).commit();
         }
+
+        media_manager = new MediaManager();
     }
 
     @Override
@@ -64,14 +71,9 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onPlayClicked(View view) {
+    public void onShowSongsClicked(View view) {
         Intent intent = new Intent(this, SongListActivity.class);
-        String[] songs = new String[] {
-            "Clair du Lune",
-            "Deux Arabesques"
-        };
-
-        intent.putExtra("com.cep.mp3player.available", songs);
+        intent.putExtra("com.cep.mp3player.available", media_manager.songTitles());
         startActivity(intent);
     }
 
@@ -89,5 +91,28 @@ public class MainActivity extends Activity {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             return rootView;
         }
+    }
+}
+
+class MediaManager {
+    String music_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() + '/';
+    File[] song_files;
+
+    public MediaManager() {
+        File music_dir = new File(music_path);
+        song_files = music_dir.listFiles();
+    }
+
+    public String[] songTitles() {
+        List<String> titles = new ArrayList<String>();
+
+        for (File f: song_files) {
+            titles.add(f.getName());
+        }
+        return titles.toArray(new String[0]);
+    }
+
+    public String getPath(int index) {
+        return song_files[index].getPath();
     }
 }
