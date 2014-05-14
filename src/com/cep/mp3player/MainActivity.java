@@ -12,11 +12,13 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.os.Build;
 
 public class MainActivity extends Activity {
@@ -87,6 +89,12 @@ public class MainActivity extends Activity {
         Bundle b = data.getExtras();
         int current_song = b.getInt("com.cep.mp3player.selected");
         playSong(media_manager.getPath(current_song));
+        showSongTitle(current_song);
+    }
+
+    void showSongTitle(int index) {
+        TextView song_title_wg = (TextView) findViewById(R.id.songTitle);
+        song_title_wg.setText(media_manager.getTitle(index));
     }
 
     /**
@@ -126,5 +134,9 @@ class MediaManager {
 
     public String getPath(int index) {
         return song_files[index].getPath();
+    }
+
+    public String getTitle(int index) {
+        return song_files[index].getName();
     }
 }
