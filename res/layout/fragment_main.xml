@@ -49,6 +49,13 @@
         android:layout_alignParentBottom="true"
         android:gravity="center" >
 
+        <Button
+            android:id="@+id/button_prev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onPrevClicked"
+            android:text="&lt;" />
+        
         <ToggleButton
             android:id="@+id/toggle_play_pause"
             android:layout_width="wrap_content"
@@ -56,7 +63,14 @@
             android:onClick="onPlayClicked"
             android:textOff="PLAY"
             android:textOn="PAUSE" />
+        
+         <Button
+            android:id="@+id/button_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onNextClicked"
+            android:text=">" />       
 
-    </LinearLayout>    
+    </LinearLayout>
 
 </RelativeLayout>

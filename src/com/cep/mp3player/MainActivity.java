@@ -26,6 +26,7 @@ import android.os.Build;
 public class MainActivity extends Activity {
     private MediaPlayer player = new MediaPlayer();
     private MediaManager media_manager;
+    int current_song;
 
     void playSong(String song_path) {
         player.reset();
@@ -36,6 +37,11 @@ public class MainActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+        
+    void playSong() {
+        showSongTitle();
+        playSong(media_manager.getSong(current_song).path());
     }
 
     @Override
@@ -89,14 +95,13 @@ public class MainActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         Bundle b = data.getExtras();
-        int current_song = b.getInt("com.cep.mp3player.selected");
+        current_song = b.getInt("com.cep.mp3player.selected");
         playSong(media_manager.getSong(current_song).path());
-        showSongTitle(current_song);
     }
 
-    void showSongTitle(int index) {
+    void showSongTitle() {
         TextView song_title_wg = (TextView) findViewById(R.id.songTitle);
-        song_title_wg.setText(media_manager.getSong(index).title());
+        song_title_wg.setText(media_manager.getSong(current_song).title());
     }
 
     public void onPlayClicked(View view) {
@@ -106,6 +111,19 @@ public class MainActivity extends Activity {
             player.start();
         else
             player.pause();
+    }
+
+    public void onPrevClicked(View view) {
+        current_song -= 1;
+        if (current_song < 0)
+            current_song = media_manager.size() -1;
+
+        playSong();
+    }
+
+    public void onNextClicked(View view) {
+        current_song = (current_song + 1) % media_manager.size();
+        playSong();
     }
 
     /**
@@ -149,6 +167,10 @@ class MediaManager {
 
     public SongData getSong(int index) {
         return new SongData(song_files[index]);
+    }
+
+    public int size() {
+        return song_files.length;
     }
 }
 
