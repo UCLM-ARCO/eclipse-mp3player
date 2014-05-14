@@ -41,6 +41,24 @@
 
     </LinearLayout>
     
+    <!--  Song picture -->
+    <LinearLayout
+        android:id="@+id/player_picture_bg"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/player_header_bg"
+        android:layout_below="@+id/player_header_bg"
+        android:layout_marginTop="26dp"
+        android:gravity="center"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp" >
+
+        <ImageView
+            android:id="@+id/album_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    
     <!-- Player Footer -->
     <LinearLayout
         android:id="@+id/player_footer_bg"

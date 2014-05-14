@@ -9,6 +9,8 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
@@ -106,6 +108,11 @@ public class MainActivity extends Activity {
 
         TextView song_title_wg = (TextView) findViewById(R.id.songTitle);
         song_title_wg.setText(song.album() + " - " + song.title());
+
+        ImageView album_picture = (ImageView) findViewById(R.id.album_picture);
+        if (album_picture != null) {
+            album_picture.setImageBitmap(song.picture());
+        }
     }
 
     public void onPlayClicked(View view) {
@@ -202,6 +209,15 @@ class SongData {
 
     public String album() {
         return metadata.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
+    }
+
+    public Bitmap picture() {
+        try {
+            byte[] raw_picture = metadata.getEmbeddedPicture(); 
+            return BitmapFactory.decodeByteArray(raw_picture, 0, raw_picture.length);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private String pathToTitle(String filename) {
