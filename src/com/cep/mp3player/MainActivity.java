@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 import android.os.Build;
 
 public class MainActivity extends Activity {
@@ -96,6 +97,15 @@ public class MainActivity extends Activity {
     void showSongTitle(int index) {
         TextView song_title_wg = (TextView) findViewById(R.id.songTitle);
         song_title_wg.setText(media_manager.getSong(index).title());
+    }
+
+    public void onPlayClicked(View view) {
+        boolean playing = ((ToggleButton) view).isChecked();
+
+        if (playing)
+            player.start();
+        else
+            player.pause();
     }
 
     /**
