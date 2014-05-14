@@ -10,6 +10,7 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.os.Build;
@@ -40,7 +42,7 @@ public class MainActivity extends Activity {
     }
         
     void playSong() {
-        showSongTitle();
+        showSongMetadata();
         playSong(media_manager.getSong(current_song).path());
     }
 
@@ -99,9 +101,11 @@ public class MainActivity extends Activity {
         playSong(media_manager.getSong(current_song).path());
     }
 
-    void showSongTitle() {
+    void showSongMetadata() {
+        SongData song = media_manager.getSong(current_song);
+
         TextView song_title_wg = (TextView) findViewById(R.id.songTitle);
-        song_title_wg.setText(media_manager.getSong(current_song).title());
+        song_title_wg.setText(song.album() + " - " + song.title());
     }
 
     public void onPlayClicked(View view) {
@@ -176,9 +180,12 @@ class MediaManager {
 
 class SongData {
     File file;
+    MediaMetadataRetriever metadata;
 
     public SongData(File f) {
         file = f;
+        metadata = new MediaMetadataRetriever();
+        metadata.setDataSource(f.getPath());
     }
 
     public String path() {
@@ -186,7 +193,15 @@ class SongData {
     }
 
     public String title() {
-        return pathToTitle(file.getName());
+        String retval = metadata.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+        if (retval == null) 
+            retval = pathToTitle(file.getName());
+
+        return retval;
+    }
+
+    public String album() {
+        return metadata.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
     }
 
     private String pathToTitle(String filename) {
