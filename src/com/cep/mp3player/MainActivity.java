@@ -74,7 +74,19 @@ public class MainActivity extends Activity {
     public void onShowSongsClicked(View view) {
         Intent intent = new Intent(this, SongListActivity.class);
         intent.putExtra("com.cep.mp3player.available", media_manager.songTitles());
-        startActivity(intent);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode,int resultCode, Intent data) {
+        if (resultCode == RESULT_CANCELED)
+            return;
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Bundle b = data.getExtras();
+        int current_song = b.getInt("com.cep.mp3player.selected");
+        playSong(media_manager.getPath(current_song));
     }
 
     /**
